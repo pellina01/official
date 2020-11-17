@@ -11,5 +11,6 @@ while True:
         print(current_time + " " + value)
         time.sleep(2)
     except Exception as e:
-        print("error occured: " + e)
+        print("error occured: ")
+        print(e)
         time.sleep(2)
