@@ -1,5 +1,3 @@
-import requests
-
 url = "http://worldtimeapi.org/api/timezone/asia/manila"
 
 
