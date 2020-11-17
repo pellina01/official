@@ -8,7 +8,8 @@ while True:
     try:
         value = i2c.read_arduino(11, 1)
         current_time = clock.getnow()
-        print(current_time + " " + value)
+        print("current time: %s" % current_time)
+        print("sensor value: %s" % value)
         time.sleep(2)
     except Exception as e:
         print("error occured: ")
