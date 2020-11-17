@@ -9,7 +9,7 @@ import smbus2 as smbus
 #     for byte in converted:
 #         convert.append(byte)
 #     return convert
-
+# hello
 
 def read_arduino(slave_addr, sensor_type):
     I2Cbus = smbus.SMBus(1)
