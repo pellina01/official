@@ -14,8 +14,9 @@ def convert_strings_to_bytes(src):
 def read_arduino(slave_addr, sensor_type):
     I2Cbus = smbus.SMBus(1)
     # i2c_slave_address = convert_strings_to_bytes(str(slave_addr))
-    i2c_slave_address = 11
+    i2c_slave_address = int(slave_addr, base=10)
     byte = convert_strings_to_bytes(str(sensor_type))
     I2Cbus.write_i2c_block_data(i2c_slave_address, 0x00, byte)
     response = I2Cbus.read_i2c_block_data(i2c_slave_address, 0x00, 5)
-    return(response)
+    res = convert_strings_to_bytes(response)
+    return(res)
