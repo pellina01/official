@@ -1,5 +1,7 @@
 import smbus2 as smbus
 
+# sensor type 1 fpr ph , 2 for turbidity
+
 
 def convert_strings_to_bytes(src):
     converted = bytes(src, "utf-8")
