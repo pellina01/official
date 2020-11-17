@@ -16,5 +16,5 @@ def read_arduino(slave_addr, sensor_type):
     byte = convert_bytes_to_list(bytes(str(sensor_type), "utf-8"))
     I2Cbus.write_i2c_block_data(i2c_slave_address, 0x00, byte)
     response = I2Cbus.read_i2c_block_data(i2c_slave_address, 0x00, 5)
-    res = convert_bytes_to_list(response)
+    res = str(response, "utf-8")
     return(res)
