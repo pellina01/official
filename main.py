@@ -10,6 +10,6 @@ while True:
         current_time = clock.getnow()
         print(current_time + " " + value)
         time.sleep(2)
-    except e:
+    except Exception as e:
         print("error occured: " + e)
         time.sleep(2)
