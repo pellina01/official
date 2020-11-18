@@ -3,6 +3,10 @@ import time
 import unixtime_api as clock
 import mqtt
 
+topic = "topic/ph"
+url = "ec2-18-206-177-119.compute-1.amazonaws.com"
+
+ph_mqtt = mqtt(topic, url)
 
 # sensor type 1 fpr ph , 2 for turbidity
 while True:
@@ -10,7 +14,7 @@ while True:
         value = i2c.read_arduino(11, 1)
         current_time = clock.getnow()
         to_send = str(value) + " at " + str(current_time)
-        mqtt.send(to_send)
+        ph_mqtt.send(to_send)
         time.sleep(2)
     except Exception as e:
         print("error occured: ")
