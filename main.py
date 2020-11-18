@@ -9,7 +9,8 @@ while True:
     try:
         value = i2c.read_arduino(11, 1)
         current_time = clock.getnow()
-        mqtt.send(current_time)
+        to_send = str(value) + " at " + str(current_time)
+        mqtt.send(to_send)
         time.sleep(2)
     except Exception as e:
         print("error occured: ")
