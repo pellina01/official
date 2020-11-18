@@ -1,4 +1,4 @@
-# import i2c_arduino_mod as i2c
+import i2c_arduino_mod as i2c
 import time
 import unixtime_api as clock
 import mqtt
