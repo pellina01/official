@@ -10,7 +10,7 @@ class mqtt:
         self.client.connect(url, 1883, 60)
         self.client.publish(self.topic, "CONNECTION OK")
         self.client.loop_start()
-        print("done mqtt setup")
+        print("done %s mqtt setup" % self.topic)
 
     def send(self, value):
         self.client.publish(self.topic, value, retain=False)
