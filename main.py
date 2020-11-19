@@ -2,11 +2,12 @@ import i2c_arduino_mod as i2c
 import time
 import unixtime_api as clock
 from mqtt import mqtt
+from config import config
 
-topic = "topic/ph"
-mqtt_url = "ec2-18-206-177-119.compute-1.amazonaws.com"
-time_url = url = "http://worldtimeapi.org/api/timezone/asia/manila"
-list_name = "unixtime"
+topic = config.topic
+mqtt_url = config.mqtt_url
+time_url = config.time_url
+list_name = config.list_name
 
 ph_mqtt = mqtt(topic, mqtt_url)
 # sensor type 1 fpr ph, 2 for turbidity
