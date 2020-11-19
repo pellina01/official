@@ -15,7 +15,7 @@ while True:
         value = i2c.read_arduino(11, 1)
         current_time = clock.getnow(time_url, list_name)
         to_send = str(value) + " at " + str(current_time)
-        ph_mqtt.send(current_time)
+        ph_mqtt.send(to_send)
         time.sleep(2)
     except Exception as e:
         print("error occured: ")
