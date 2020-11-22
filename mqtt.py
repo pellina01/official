@@ -4,7 +4,6 @@ class mqtt:
     def __init__(self, topic, url):
         import paho.mqtt.client as mqtt
         import json
-        import time
         self.topic = topic
         self.client = mqtt.Client()
         self.client.will_set(
@@ -19,12 +18,13 @@ class mqtt:
                 self.connected = True
             except:
                 if self.printed is False:
-                    print("failed to connect to %s, retrying...." % url)
+                    print(
+                        "unable to establish connection with topic:'%s', retrying...." % self.topic)
                     self.printed = True
 
         self.client.publish(self.topic, json.dumps({"status": "connected"}))
         self.client.loop_start()
-        print("done '%s' mqtt setup" % self.topic)
+        print("done topic:'%s' connection setup." % self.topic)
 
     def send(self, value):
         self.client.publish(self.topic, value, retain=False)
