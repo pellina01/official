@@ -5,13 +5,13 @@ class mqtt:
         import paho.mqtt.client as mqtt
         import json
         import time
-        self.connected = False
         self.topic = topic
         self.client = mqtt.Client()
         self.client.will_set(
             self.topic, payload=json.dumps({"status": "disconnected"}), qos=0, retain=False)
 
         # run code until connect
+        self.connected = False
         self.printed = False
         while self.connected is False:
             try:
