@@ -29,11 +29,11 @@ while True:
         temp_value = str(w1temp.read_value())
 
         current_time = str(clock.getnow(time_url, list_name))
-        ph_data = {"status": "connected",
+        ph_data = {"status": "sending",
                    "time": current_time, "value": ph_value}
-        tb_data = {"status": "connected",
+        tb_data = {"status": "sending",
                    "time": current_time, "value": tb_value}
-        temp_data = {"status": "connected",
+        temp_data = {"status": "sending",
                      "time": current_time, "value": temp_value}
         ph_mqtt.send(json.dumps(ph_data))
         tb_mqtt.send(json.dumps(tb_data))
