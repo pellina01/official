@@ -3,7 +3,7 @@ import time
 import json
 import unixtime_api as clock
 from mqtt import mqtt
-from config import config
+from config_raspi import config
 import temp as w1temp
 #import datetime
 
