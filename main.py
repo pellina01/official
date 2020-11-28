@@ -24,9 +24,16 @@ ph = config.ph_topic
 tb = config.tb_topic
 temp = config.temp_topic
 
-ph_mqtt = mqtt(ph, mqtt_url)
-tb_mqtt = mqtt(tb, mqtt_url)
-temp_mqtt = mqtt(temp, mqtt_url)
+
+connected = False
+while connected is False:
+    try:
+        ph_mqtt = mqtt(ph, mqtt_url)
+        tb_mqtt = mqtt(tb, mqtt_url)
+        temp_mqtt = mqtt(temp, mqtt_url)
+        connected = True
+    except Exception as e:
+        print("error occured: %s" % e)
 
 
 while True:
@@ -38,6 +45,7 @@ while True:
         temp_value = str(w1temp.read_value())
 
         current_time = str(clock.getnow(time_url, unix_name))
+        #current_time = int(time.time())
 
         ph_data = {"status": "sending",
                    "time": current_time, "value": ph_value}
@@ -50,8 +58,7 @@ while True:
         temp_mqtt.send(json.dumps(temp_data))
         time.sleep(30)
     except Exception as e:
-        print("error occured: " + traceback.format_exc())
-        print("error message: ")
-        print(e)
+        print("error occured: %s" % traceback.format_exc())
+        print("error message: %s" % e)
         logging.error(traceback.format_exc())
         time.sleep(2)
