@@ -16,6 +16,8 @@ error = config.error_file
 mqtt_url = config.mqtt_url
 time_url = config.time_url
 unix_name = config.unix_name
+time_url2 = config.time_url2
+unix_name2 = config.unix_name2
 
 
 logging.basicConfig(filename=error)
@@ -25,15 +27,10 @@ tb = config.tb_topic
 temp = config.temp_topic
 
 
-connected = False
-while connected is False:
-    try:
-        ph_mqtt = mqtt(ph, mqtt_url)
-        tb_mqtt = mqtt(tb, mqtt_url)
-        temp_mqtt = mqtt(temp, mqtt_url)
-        connected = True
-    except Exception as e:
-        print("error occured: %s" % e)
+ph_mqtt = mqtt(ph, mqtt_url)
+tb_mqtt = mqtt(tb, mqtt_url)
+temp_mqtt = mqtt(temp, mqtt_url)
+connected = True
 
 
 while True:
@@ -44,7 +41,8 @@ while True:
         tb_value = str(i2c.read_arduino(11, 2))
         temp_value = str(w1temp.read_value())
 
-        current_time = str(clock.getnow(time_url, unix_name))
+        current_time = str(clock.getnow(
+            time_url, unix_name, time_url2, unix_name2))
         #current_time = int(time.time())
 
         ph_data = {"status": "sending",
