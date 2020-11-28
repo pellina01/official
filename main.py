@@ -38,6 +38,7 @@ while True:
         temp_value = str(w1temp.read_value())
 
         current_time = str(clock.getnow(time_url, unix_name))
+
         ph_data = {"status": "sending",
                    "time": current_time, "value": ph_value}
         tb_data = {"status": "sending",
@@ -47,7 +48,7 @@ while True:
         ph_mqtt.send(json.dumps(ph_data))
         tb_mqtt.send(json.dumps(tb_data))
         temp_mqtt.send(json.dumps(temp_data))
-        time.sleep(2)
+        time.sleep(30)
     except Exception as e:
         print("error occured: " + traceback.format_exc())
         print("error message: ")
