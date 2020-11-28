@@ -15,7 +15,7 @@ import logging
 error = config.error_file
 mqtt_url = config.mqtt_url
 time_url = config.time_url
-list_name = config.list_name
+unix_name = config.unix_name
 
 
 logging.basicConfig(filename=error)
@@ -35,7 +35,7 @@ while True:
         tb_value = str(i2c.read_arduino(11, 2))
         temp_value = str(w1temp.read_value())
 
-        current_time = str(clock.getnow(time_url, list_name))
+        current_time = str(clock.getnow(time_url, unix_name))
         ph_data = {"status": "sending",
                    "time": current_time, "value": ph_value}
         tb_data = {"status": "sending",
