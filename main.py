@@ -10,14 +10,18 @@ import json
 
 import logging
 import traceback
+import configparser
 
 
-error = config.error_file
-mqtt_url = config.mqtt_url
-time_url = config.time_url
-unix_name = config.unix_name
-time_url2 = config.time_url2
-unix_name2 = config.unix_name2
+config.read('config.ini')
+
+
+error = config['raspi']['error_file']
+mqtt_url = config['raspi']['mqtt_url']
+time_url = config['raspi']['time_url']
+unix_name = config['raspi']['unix_name']
+time_url2 = config['raspi']['time_url2']
+unix_name2 = config['raspi']['unix_name2']
 
 
 logging.basicConfig(filename=error)
