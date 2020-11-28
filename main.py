@@ -5,11 +5,11 @@ from config_raspi import config
 import temp as w1temp
 import time
 import json
-import traceback
 #import datetime
 
 
 import logging
+import traceback
 
 
 error = config.error_file
@@ -50,6 +50,7 @@ while True:
         time.sleep(2)
     except Exception as e:
         print("error occured: " + traceback.format_exc())
-        print("error message: " + e)
+        print("error message: ")
+        print(e)
         logging.error(traceback.format_exc())
         time.sleep(2)
