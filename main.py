@@ -28,10 +28,12 @@ ph_mqtt = mqtt(ph, mqtt_url)
 tb_mqtt = mqtt(tb, mqtt_url)
 temp_mqtt = mqtt(temp, mqtt_url)
 
-# sensor type 1 fpr ph, 2 for turbidity
+
 while True:
     try:
+        # sensor type 1 for ph, 11 for arduino i2c address
         ph_value = str(i2c.read_arduino(11, 1))
+        # sensor type 2 for turbidity, 11 for arduino i2c address
         tb_value = str(i2c.read_arduino(11, 2))
         temp_value = str(w1temp.read_value())
 
