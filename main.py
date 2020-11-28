@@ -4,7 +4,6 @@ from mqtt import mqtt
 import temp as w1temp
 import time
 import json
-#import datetime
 
 
 import logging
