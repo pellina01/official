@@ -31,6 +31,7 @@ class mqtt:
         self.client.loop_start()
         print("done topic:'%s' connection setup." % topic)
 
+        # for error logging
         self.logging = logging
         self.traceback = traceback
         self.logging.basicConfig(filename="error.log")
