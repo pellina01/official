@@ -5,4 +5,5 @@ import time
 def read_value():
     sensor = W1ThermSensor()
     temperature_in_celsius = sensor.get_temperature()
+    del sensor
     return temperature_in_celsius

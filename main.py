@@ -29,34 +29,46 @@ ph = config.ph_topic
 tb = config.tb_topic
 temp = config.temp_topic
 
+del config
 
 ph_mqtt = mqtt(ph, mqtt_url)
 tb_mqtt = mqtt(tb, mqtt_url)
 temp_mqtt = mqtt(temp, mqtt_url)
-connected = True
+
+sensor_info = {
+    "ph_value": "",
+    "tb_value": "",
+    "temp_value": "",
+    "current_time": ""
+}
+
+data = {
+    "ph": "",
+    "tb": "",
+    "temp": ""
+}
 
 
 while True:
     try:
         # sensor type 1 for ph, 11 for arduino i2c address
-        ph_value = str(i2c.read_arduino(11, 1))
+        sensor_info['ph_value'] = str(i2c.read_arduino(11, 1))
         # sensor type 2 for turbidity, 11 for arduino i2c address
-        tb_value = str(i2c.read_arduino(11, 2))
-        temp_value = str(w1temp.read_value())
+        sensor_info['tb_value'] = str(i2c.read_arduino(11, 2))
+        sensor_info['temp_value'] = str(w1temp.read_value())
 
-        current_time = str(clock.getnow(
+        sensor_info['current_time'] = str(clock.getnow(
             time_url, unix_name, time_url2, unix_name2))
-        #current_time = int(time.time())
 
-        ph_data = {"status": "sending",
-                   "time": current_time, "value": ph_value}
-        tb_data = {"status": "sending",
-                   "time": current_time, "value": tb_value}
-        temp_data = {"status": "sending",
-                     "time": current_time, "value": temp_value}
-        ph_mqtt.send(json.dumps(ph_data))
-        tb_mqtt.send(json.dumps(tb_data))
-        temp_mqtt.send(json.dumps(temp_data))
+        data["ph"] = {"status": "sending",
+                      "time": sensor_info['current_time'], "value": sensor_info['ph_value']}
+        data["tb"] = {"status": "sending",
+                      "time": sensor_info['current_time'], "value": sensor_info['tb_value']}
+        data["temp"] = {"status": "sending",
+                        "time": sensor_info['current_time'], "value": sensor_info['temp_value']}
+        ph_mqtt.send(json.dumps(data["ph"]))
+        tb_mqtt.send(json.dumps(data["ph"]))
+        temp_mqtt.send(json.dumps(data["ph"]))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
