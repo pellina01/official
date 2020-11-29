@@ -5,6 +5,9 @@ class mqtt:
         import paho.mqtt.client as mqtt
         import json
 
+        import logging
+        import traceback
+
         self.topic = topic
         self.client = mqtt.Client()
 
@@ -28,8 +31,13 @@ class mqtt:
         self.client.loop_start()
         print("done topic:'%s' connection setup." % topic)
 
+        self.logging = logging
+        self.traceback = traceback
+        self.logging.basicConfig(filename="error.log")
+
     def send(self, payload, retain=False):
         try:
             self.client.publish(self.topic, payload, retain)
         except Exception as e:
             print("error occured: %s" % e)
+            self.logging.error(self.traceback.format_exc())
