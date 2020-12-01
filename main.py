@@ -1,5 +1,5 @@
 from i2c_arduino_mod import read_arduino
-from unixtime_api import getnow
+from unixtime_api import get_time
 from mqtt import mqtt
 from temp import read_value
 import time
@@ -22,18 +22,18 @@ logging.basicConfig(filename='error.log')
 ph_mqtt = mqtt('ph', mqtt_url)
 tb_mqtt = mqtt('tb', mqtt_url)
 temp_mqtt = mqtt('temp', mqtt_url)
+read_time = get_time(time_url, unix_name, time_url2, unix_name2)
 
 
-def sendingSerializer(time, value):
-    return json.dumps({"status": "sending", "time": str(time), "value": str(value)})
+def formatter(value):
+    return json.dumps({"status": "sending", "time": str(read_time()), "value": str(value)})
 
 
 while True:
     try:
-        read_time = getnow(time_url, unix_name, time_url2, unix_name2)
-        ph_mqtt.send(sendingSerializer(read_time, read_arduino(11, 1)))
-        tb_mqtt.send(sendingSerializer(read_time, read_arduino(11, 2)))
-        temp_mqtt.send(sendingSerializer(read_time, read_value()))
+        ph_mqtt.send(formatter(read_arduino(11, 1)))
+        tb_mqtt.send(formatter(read_arduino(11, 2)))
+        temp_mqtt.send(formatter(read_value()))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
