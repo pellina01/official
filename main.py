@@ -7,15 +7,13 @@ import json
 import logging
 import traceback
 
-
-json = open('config.json')
+json_file = open('config.json')
 data = json.load(json)
-json.close()
+json_file.close()
 
 raspi = {}
 for key, value in data["raspi"].items():
     raspi.update({key: value})
-
 
 logging.basicConfig(filename=raspi["error_file"])
 
