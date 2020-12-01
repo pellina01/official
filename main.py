@@ -6,23 +6,24 @@ import time
 import json
 import logging
 import traceback
-import configparser
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-mqtt_url = config['raspi']['mqtt_url']
-time_url = config['raspi']['time_url']
-unix_name = config['raspi']['unix_name']
-time_url2 = config['raspi']['time_url2']
-unix_name2 = config['raspi']['unix_name2']
-del config
 
-logging.basicConfig(filename='error.log')
+json = open('config.json')
+data = json.load(json)
+json.close()
 
-ph_mqtt = mqtt('ph', mqtt_url)
-tb_mqtt = mqtt('tb', mqtt_url)
-temp_mqtt = mqtt('temp', mqtt_url)
-read_time = get_time(time_url, unix_name, time_url2, unix_name2)
+raspi = {}
+for key, value in data["raspi"].items():
+    raspi.update({key: value})
+
+
+logging.basicConfig(filename=raspi["error_file"])
+
+ph_mqtt = mqtt(raspi["ph_topic"], raspi["mqtt_url"])
+tb_mqtt = mqtt(raspi["tb_topic"], raspi["mqtt_url"])
+temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
+read_time = get_time(raspi["time_url"], raspi["unix_name"],
+                     raspi["time_url2"], raspi["unix_name2"])
 
 
 def formatter(value):
