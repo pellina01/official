@@ -8,7 +8,7 @@ import logging
 import traceback
 
 json_file = open('config.json')
-data = json.load(json)
+data = json.load(json_file)
 json_file.close()
 
 raspi = {}
