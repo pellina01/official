@@ -23,11 +23,6 @@ ph_mqtt = mqtt('ph', mqtt_url)
 tb_mqtt = mqtt('tb', mqtt_url)
 temp_mqtt = mqtt('temp', mqtt_url)
 
-read_time = getnow(time_url, unix_name, time_url2, unix_name2)
-read_ph = read_arduino(11, 1)
-read_tb = read_arduino(11, 2)
-read_temp = read_value()
-
 
 def sendingSerializer(time, value):
     return json.dumps({"status": "sending", "time": str(time), "value": str(value)})
@@ -35,9 +30,10 @@ def sendingSerializer(time, value):
 
 while True:
     try:
-        ph_mqtt.send(sendingSerializer(read_time, read_ph))
-        tb_mqtt.send(sendingSerializer(read_time, read_tb))
-        temp_mqtt.send(sendingSerializer(read_time, read_temp))
+        read_time = getnow(time_url, unix_name, time_url2, unix_name2)
+        ph_mqtt.send(sendingSerializer(read_time, read_arduino(11, 1)))
+        tb_mqtt.send(sendingSerializer(read_time, read_arduino(11, 2)))
+        temp_mqtt.send(sendingSerializer(read_time, read_value()))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
