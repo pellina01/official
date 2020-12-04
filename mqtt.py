@@ -19,6 +19,7 @@ class mqtt:
         self.printed = False
         while self.connected is False:
             try:
+                print(host)
                 self.client.connect(host, port, keepalive)
                 self.connected = True
             except:
