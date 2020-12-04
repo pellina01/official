@@ -1,7 +1,7 @@
 
 class mqtt:
 
-    def __init__(self, topic, host, qos=0, retain=False, port=1883, keepalive=0):
+    def __init__(self, topic, host, qos=0, retain=False, port=1883, keepalive=20):
         import paho.mqtt.client as mqtt
         import json
 
