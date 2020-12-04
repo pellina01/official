@@ -25,6 +25,8 @@ read_time = get_time(raspi["time_url"], raspi["unix_name"],
 
 
 def formatter(value):
+    print(json.dumps({"status": "sending", "time": str(
+        read_time()), "value": str(value)}))
     return json.dumps({"status": "sending", "time": str(read_time()), "value": str(value)})
 
 
