@@ -18,5 +18,5 @@ def get_time(url, unix_name, url2, unix_name2):
             else:
                 print("API call failed. Substituting system time")
                 del json_response
-                return int(time.time())
+                return (int(time.time()) * 1000000)
     return getnow
