@@ -32,10 +32,10 @@ def formatter(value, time):
 
 while True:
     try:
-        time = read_time()
-        ph_mqtt.send(formatter(read_arduino(11, 1), time))
-        tb_mqtt.send(formatter(read_arduino(11, 2), time))
-        temp_mqtt.send(formatter(read_value(), time))
+        timer = read_time()
+        ph_mqtt.send(formatter(read_arduino(11, 1), timer))
+        tb_mqtt.send(formatter(read_arduino(11, 2), timer))
+        temp_mqtt.send(formatter(read_value(), timer))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
