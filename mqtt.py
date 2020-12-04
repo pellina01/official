@@ -15,11 +15,11 @@ class mqtt:
             topic, payload=json.dumps({"status": "disconnected"}), qos=qos, retain=retain)
 
         # run code until connect
+        print(host)
         self.connected = False
         self.printed = False
         while self.connected is False:
             try:
-                print(host)
                 self.client.connect(host, port, keepalive)
                 self.connected = True
             except:
