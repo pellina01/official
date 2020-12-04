@@ -4,11 +4,11 @@ import time
 
 def get_time(url, unix_name, url2, unix_name2):
     def getnow():
-        if (json_response := requests.get(url=url)).status_code == 200:
+        if requests.get(url=url).status_code == 200:
             data = json_response.json()
             del json_response
             return data[unix_name]
-        elif (json_response := requests.get(url=url2)).status_code == 200:
+        elif requests.get(url=url2).status_code == 200:
             data = json_response.json()
             del json_response
             return data[unix_name2]
