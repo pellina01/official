@@ -24,17 +24,18 @@ read_time = get_time(raspi["time_url"], raspi["unix_name"],
                      raspi["time_url2"], raspi["unix_name2"])
 
 
-def formatter(value):
+def formatter(value, time):
     print(json.dumps({"status": "sending", "time": str(
         read_time()), "value": str(value)}))
-    return json.dumps({"status": "sending", "time": str(read_time()), "value": str(value)})
+    return json.dumps({"status": "sending", "time": str(time), "value": str(value)})
 
 
 while True:
     try:
-        ph_mqtt.send(formatter(read_arduino(11, 1)))
-        tb_mqtt.send(formatter(read_arduino(11, 2)))
-        temp_mqtt.send(formatter(read_value()))
+        time = read_time()
+        ph_mqtt.send(formatter(read_arduino(11, 1), time))
+        tb_mqtt.send(formatter(read_arduino(11, 2), time))
+        temp_mqtt.send(formatter(read_value(), time))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
