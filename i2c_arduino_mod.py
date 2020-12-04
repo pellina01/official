@@ -19,4 +19,4 @@ def read_arduino(slave_addr, sensor_type):
     del I2Cbus
     del byte
     del response
-    return(res)
+    return(float(res))
