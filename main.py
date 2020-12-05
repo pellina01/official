@@ -1,5 +1,5 @@
 from i2c_arduino_mod import read_arduino
-from unixtime_api import get_time
+# from unixtime_api import get_time
 from mqtt import mqtt
 from temp import read_value
 import time
