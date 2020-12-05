@@ -20,22 +20,20 @@ logging.basicConfig(filename=raspi["error_file"])
 ph_mqtt = mqtt(raspi["ph_topic"], raspi["mqtt_url"])
 tb_mqtt = mqtt(raspi["tb_topic"], raspi["mqtt_url"])
 temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
-read_time = get_time(raspi["time_url"], raspi["unix_name"],
-                     raspi["time_url2"], raspi["unix_name2"])
+# read_time = get_time(raspi["time_url"], raspi["unix_name"],
+#                      raspi["time_url2"], raspi["unix_name2"])
 
 
 def formatter(value, time):
-    print(json.dumps({"status": "sending", "time": str(
-        read_time()), "value": str(value)}))
-    return json.dumps({"status": "sending", "time": str(time), "value": str(value)})
+    print(json.dumps({"status": "sending", "value": str(value)}))
+    return json.dumps({"status": "sending", "value": str(value)})
 
 
 while True:
     try:
-        timer = read_time()
-        ph_mqtt.send(formatter(read_arduino(11, 1), timer))
-        tb_mqtt.send(formatter(read_arduino(11, 2), timer))
-        temp_mqtt.send(formatter(read_value(), timer))
+        ph_mqtt.send(formatter(read_arduino(11, 1)))
+        tb_mqtt.send(formatter(read_arduino(11, 2)))
+        temp_mqtt.send(formatter(read_value()))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
