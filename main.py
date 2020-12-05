@@ -24,16 +24,16 @@ temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
 #                      raspi["time_url2"], raspi["unix_name2"])
 
 
-def formatter(value, time):
-    print(json.dumps({"status": "sending", "value": str(value)}))
+def formatter(value, time, topic):
+    print({"topic": topic, "status": "sending", "value": str(value)})
     return json.dumps({"status": "sending", "value": str(value)})
 
 
 while True:
     try:
-        ph_mqtt.send(formatter(read_arduino(11, 1)))
-        tb_mqtt.send(formatter(read_arduino(11, 2)))
-        temp_mqtt.send(formatter(read_value()))
+        ph_mqtt.send(formatter(read_arduino(11, 1), "ph"))
+        tb_mqtt.send(formatter(read_arduino(11, 2), "tb"))
+        temp_mqtt.send(formatter(read_value(), "temp"))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
