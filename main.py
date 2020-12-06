@@ -26,7 +26,7 @@ temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
 #                      raspi["time_url2"], raspi["unix_name2"])
 
 
-def formatter(value, time, topic):
+def formatter(value, topic):
     print({"topic": topic, "status": "sending", "value": str(value)})
     return json.dumps({"status": "sending", "value": str(value)})
 
