@@ -1,8 +1,5 @@
-# debugging code only. actual codes will run sensors independent with each other
-
 from i2c_arduino_mod import read_arduino
 from mqtt import mqtt
-from temp import read_value
 import time
 import json
 import logging
@@ -17,9 +14,7 @@ for key, value in data["raspi"].items():
 
 logging.basicConfig(filename=raspi["error_file"])
 
-ph_mqtt = mqtt(raspi["ph_topic"], raspi["mqtt_url"])
 tb_mqtt = mqtt(raspi["tb_topic"], raspi["mqtt_url"])
-temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
 
 
 def formatter(value, topic):
@@ -29,9 +24,7 @@ def formatter(value, topic):
 
 while True:
     try:
-        ph_mqtt.send(formatter(read_arduino(11, 1), "ph"))
         tb_mqtt.send(formatter(read_arduino(11, 2), "tb"))
-        temp_mqtt.send(formatter(read_value(), "temp"))
         time.sleep(30)
     except Exception as e:
         print("error occured: %s" % traceback.format_exc())
