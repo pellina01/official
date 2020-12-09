@@ -1,4 +1,4 @@
-# debugging code only. actual codes will run sensors independent with each other
+# edited for actual application
 
 from i2c_arduino_mod import read_arduino
 from mqtt import mqtt
@@ -26,6 +26,26 @@ def formatter(value, topic):
     print({"topic": topic, "status": "sending", "value": str(value)})
     return json.dumps({"status": "sending", "value": str(value)})
 
+def mqtt_sensor(f1 , f2, f3, topic, *arg):
+    def get():
+        try:
+            f1(f2(f3(arg[0],arg[1]),topic))
+        except Exception:
+            print("error occured: %s" % traceback.format_exc())
+            print("error at topic: %s" % topic)
+            logging.error(traceback.format_exc())
+            time.sleep(2)
+    return(get)
+
+ph_send = mqtt_sensor(ph_mqtt.send, formatter, read_arduino,"ph", 11, 1)
+tb_send = mqtt_sensor(tb_mqtt.send, formatter, read_arduino,"tb", 11, 2)
+temp_send = mqtt_sensor(temp_mqtt.send, formatter, read_value,"temp", 0, 0)
+
+while True:
+    ph_send()
+    tb_send()
+    temp_send()
+    time.sleep(30)
 
 # while True:
 #     try:
@@ -41,23 +61,3 @@ def formatter(value, topic):
 
 
 
-def sensor(f1 , f2, f3, topic, *arg):
-    def get():
-        try:
-            f1(f2(f3(arg[0],arg[1]),topic))
-        except Exception:
-            print("error occured: %s" % traceback.format_exc())
-            print("error mat topic: %s" % topic)
-            logging.error(traceback.format_exc())
-            time.sleep(2)
-    return(get)
-
-ph_send = sensor(ph_mqtt.send, formatter, read_arduino,"ph", 11, 1)
-tb_send = sensor(tb_mqtt.send, formatter, read_arduino,"tb", 11, 2)
-temp_send = sensor(temp_mqtt.send, formatter, read_value,"temp", 0, 0)
-
-while True:
-    ph_send()
-    tb_send()
-    temp_send()
-    time.sleep(30)
