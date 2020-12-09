@@ -34,7 +34,6 @@ def mqtt_sensor(f1 , f2, f3, topic, *arg):
             print("error occured: %s" % traceback.format_exc())
             print("error at topic: %s" % topic)
             logging.error(traceback.format_exc())
-            time.sleep(2)
     return(get)
 
 ph_send = mqtt_sensor(ph_mqtt.send, formatter, read_arduino,"ph", 11, 1)
