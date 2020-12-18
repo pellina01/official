@@ -5,6 +5,7 @@ import time
 temp = 30
 
 aerator_mqtt = mqtt("aerator", "localhost")
+aerator_mqtt.send("off")
 
 while temp > 29:
     temp = read_value()
