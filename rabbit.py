@@ -5,6 +5,7 @@ class rabbitmq:
 		import traceback
 		self.printed = self.connected = False
 		self.queue = queue
+		self.pika = pika
 		while not self.connected:
 			try:
 			    self.connection = pika.BlockingConnection(
@@ -27,12 +28,10 @@ class rabbitmq:
 		try:
 		    self.channel.basic_publish(
 		        exchange='',
-		        routing_key=self.queue,
-		        body=json_msg,
-		        properties=pika.BasicProperties(
-		            delivery_mode=2,  # make message persistent
-		        ))
-		    print(" [x] Sent to queue %s" % json_msg)
+		        routing_key = self.queue,
+		        body = json_msg,
+		        properties = self.pika.BasicProperties(delivery_mode = 2,))# make message persistent
+		    print(" [x] Sent message: %s to queue" % json_msg)
 		except: 
 			print("failed to insert data to queue...")
             self.logging.error(self.traceback.format_exc())
