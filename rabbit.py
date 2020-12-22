@@ -1,19 +1,19 @@
 class rabbitmq:
 	def __init__(self, host, queue):
 		import pika
-		printed = connected = False
+		self.printed = self.connected = False
 		self.queue = queue
-		while not connected:
+		while not self.connected:
 			try:
 			    self.connection = pika.BlockingConnection(
 			        pika.ConnectionParameters(host=host))
 			    self.channel = self.connection.channel()
 			    self.channel.queue_declare(queue=queue, durable=True)
-			    connected = True
+			    self.connected = True
 			except:
-				if not printed:
+				if not self.printed:
 					print("failed to connect to rabbitmq server. retrying...")
-					printed = True
+					self.printed = True
 		del printed
 		del printed
 
