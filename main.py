@@ -76,10 +76,14 @@ if __name__ == "__main__":
     temp_send = sensor_serializer(
         rqueue.insert, temp_mqtt.send, formatter, read_value, raspi["temp_topic"], 0, 0)
     while True:
-        ph_send()
-        tb_send()
-        temp_send()
-        time.sleep(30)
+        try:
+            ph_send()
+            tb_send()
+            temp_send()
+            time.sleep(30)
+        except Exception as e:
+            self.logging.error(self.traceback.format_exc())
+            time.sleep(5)
     # # rabbitmq object
     # connection = pika.BlockingConnection(
     #     pika.ConnectionParameters(host=raspi["mqtt_url"]))

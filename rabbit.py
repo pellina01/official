@@ -1,6 +1,8 @@
 class rabbitmq:
 	def __init__(self, host, queue):
 		import pika
+		import logging
+		import traceback
 		self.printed = self.connected = False
 		self.queue = queue
 		while not self.connected:
@@ -16,6 +18,10 @@ class rabbitmq:
 					self.printed = True
 		del printed
 		del printed
+		# for error logging
+        self.logging = logging
+        self.traceback = traceback
+        self.logging.basicConfig(filename="error.log")
 
 	def insert(json_msg):
 		try:
@@ -29,3 +35,4 @@ class rabbitmq:
 		    print(" [x] Sent to queue %s" % json_msg)
 		except: 
 			print("failed to insert data to queue...")
+            self.logging.error(self.traceback.format_exc())
