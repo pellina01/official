@@ -29,7 +29,7 @@ class rabbitmq:
                 exchange='',
                 routing_key=self.queue,
                 body=json_msg,
-                properties=self.pika.BasicProperties(delivery_mode=2,))  # make message persistent
+                properties=self.pika.BasicProperties(delivery_mode=2))  # make message persistent
             print(" [x] Sent message: %s to queue" % json_msg)
         except:
             print("failed to insert data to queue...")

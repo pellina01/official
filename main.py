@@ -12,7 +12,7 @@ import datetime
 # import pika
 
 
-def internet_on():
+def has_internet():
     return os.system("sudo ping -c 1 " + raspi["mqtt_url"]) == 0
 
 
@@ -29,7 +29,7 @@ def formatter(value, topic, connected):
 
 def sensor_serializer(rabbitmq_insert, mqtt_send, format, sensor_function, topic, *arg):
     def get():
-        if internet_on():
+        if has_internet():
             mqtt_send(format(sensor_function(arg[0], arg[1]), topic, True))
         else:
             rabbitmq_insert(
@@ -38,12 +38,10 @@ def sensor_serializer(rabbitmq_insert, mqtt_send, format, sensor_function, topic
 
 
 if __name__ == "__main__":
-    time.sleep(300)
-    connected = internet_on()
+    time.sleep(20)
     is_printed = False
-    while not connected:
+    while not has_internet():
         time.sleep(3)
-        connected = internet_on()
         if is_printed is False:
             print("cant reach the cloud server. retrying.....")
             is_printed = True

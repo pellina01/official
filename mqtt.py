@@ -12,7 +12,7 @@ class mqtt:
         self.client = mqtt.Client()
 
         self.client.will_set(
-            topic, payload=json.dumps({"status": "disconnected"}), qos=qos, retain=retain)
+            topic, json.dumps({"status": "disconnected"}), qos, retain)
 
         # run code until connect
         print(host)
