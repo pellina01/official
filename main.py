@@ -11,15 +11,13 @@ import os
 import datetime
 # import pika
 
+
 def internet_on():
-    if os.system("sudo ping -c 1 " + raspi["mqtt_url"]) == 0:
-        return True
-    else:
-        return False
+    return os.system("sudo ping -c 1 " + raspi["mqtt_url"]) == 0
 
 
-def formatter(value, topic, conn):
-    if conn:
+def formatter(value, topic, connected):
+    if connected:
         print({"topic": topic, "status": "sending", "value": str(value)})
         return json.dumps({"status": "sending", "value": str(value)})
     else:
@@ -29,29 +27,30 @@ def formatter(value, topic, conn):
                            "time": str(datetime.datetime.now())})
 
 
-def sensor_serializer(rq, mq, format, sensorfunc, topic, *arg):
+def sensor_serializer(rabbitmq_insert, mqtt_send, format, sensor_function, topic, *arg):
     def get():
-        data = sensorfunc(arg[0], arg[1])
+        data = sensor_function(arg[0], arg[1])
         if internet_on():
-            mq(format(data, topic, True))
+            mqtt_send(format(data, topic, True))
         else:
-            rq(format(data, topic, False))
+            rabbitmq_insert(format(data, topic, False))
         del data
     return(get)
 
+
 if __name__ == "__main__":
     time.sleep(300)
-    conn = internet_on()
+    connected = internet_on()
     is_printed = False
-    while conn is False:
-        conn = internet_on()
+    while not connected:
+        time.sleep(3)
+        connected = internet_on()
         if is_printed is False:
             print("cant reach the cloud server. retrying.....")
             is_printed = True
-        time.sleep(3)
 
     del is_printed
-    del conn
+    del connected
     print("cloud server has been reached")
 
     with open('config.json', 'r') as file:
@@ -67,14 +66,14 @@ if __name__ == "__main__":
     tb_mqtt = mqtt(raspi["tb_topic"], raspi["mqtt_url"])
     temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
 
-    rqueue = rabbitmq(raspi["mqtt_url"], "sensor_queue")
+    rabbit_mq = rabbitmq(raspi["mqtt_url"], "sensor_queue")
 
     ph_send = sensor_serializer(
-        rqueue.insert, ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], 11, 1)
+        rabbit_mq.insert, ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], 11, 1)
     tb_send = sensor_serializer(
-        rqueue.insert, tb_mqtt.send, formatter, read_arduino,raspi["tb_topic"], 11, 2)
+        rabbit_mq.insert, tb_mqtt.send, formatter, read_arduino, raspi["tb_topic"], 11, 2)
     temp_send = sensor_serializer(
-        rqueue.insert, temp_mqtt.send, formatter, read_value, raspi["temp_topic"], 0, 0)
+        rabbit_mq.insert, temp_mqtt.send, formatter, read_value, raspi["temp_topic"], 0, 0)
     while True:
         try:
             ph_send()
@@ -82,7 +81,7 @@ if __name__ == "__main__":
             temp_send()
             time.sleep(30)
         except Exception as e:
-            self.logging.error(self.traceback.format_exc())
+            logging.error(traceback.format_exc())
             time.sleep(5)
     # # rabbitmq object
     # connection = pika.BlockingConnection(
