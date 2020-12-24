@@ -29,12 +29,11 @@ def formatter(value, topic, connected):
 
 def sensor_serializer(rabbitmq_insert, mqtt_send, format, sensor_function, topic, *arg):
     def get():
-        data = sensor_function(arg[0], arg[1])
         if internet_on():
-            mqtt_send(format(data, topic, True))
+            mqtt_send(format(sensor_function(arg[0], arg[1]), topic, True))
         else:
-            rabbitmq_insert(format(data, topic, False))
-        del data
+            rabbitmq_insert(
+                format(sensor_function(arg[0], arg[1]), topic, False))
     return(get)
 
 
@@ -49,8 +48,6 @@ if __name__ == "__main__":
             print("cant reach the cloud server. retrying.....")
             is_printed = True
 
-    del is_printed
-    del connected
     print("cloud server has been reached")
 
     with open('config.json', 'r') as file:
@@ -62,11 +59,11 @@ if __name__ == "__main__":
 
     logging.basicConfig(filename=raspi["error_file"])
 
+    rabbit_mq = rabbitmq(raspi["mqtt_url"], "sensor_queue")
+
     ph_mqtt = mqtt(raspi["ph_topic"], raspi["mqtt_url"])
     tb_mqtt = mqtt(raspi["tb_topic"], raspi["mqtt_url"])
     temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
-
-    rabbit_mq = rabbitmq(raspi["mqtt_url"], "sensor_queue")
 
     ph_send = sensor_serializer(
         rabbit_mq.insert, ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], 11, 1)
@@ -74,6 +71,7 @@ if __name__ == "__main__":
         rabbit_mq.insert, tb_mqtt.send, formatter, read_arduino, raspi["tb_topic"], 11, 2)
     temp_send = sensor_serializer(
         rabbit_mq.insert, temp_mqtt.send, formatter, read_value, raspi["temp_topic"], 0, 0)
+
     while True:
         try:
             ph_send()
