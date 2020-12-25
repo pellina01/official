@@ -9,12 +9,6 @@ import logging
 import traceback
 import os
 import datetime
-ADDR_SLAVE = 11
-TYPE_PH = 1
-TYPE_TB = 2
-PLACE_HOLDER = 0
-CLOUD_SERVER = "127.0.0.1" #localhost default
-LOCAL_HOST = "127.0.0.1" 
 
 
 def has_internet():
@@ -44,7 +38,6 @@ def sensor_serializer(rabbitmq_insert, mqtt_send, format, sensor_function, topic
 
 if __name__ == "__main__":
     time.sleep(20)
-    is_printed = False
 
     with open('config.json', 'r') as file:
         data = json.loads(file.read())
@@ -54,6 +47,13 @@ if __name__ == "__main__":
         raspi.update({key: value})
 
     CLOUD_SERVER = raspi["mqtt_url"]
+    ADDR_SLAVE = 11
+    TYPE_PH = 1
+    TYPE_TB = 2
+    PLACE_HOLDER = 0
+    LOCAL_HOST = "127.0.0.1" 
+    
+    is_printed = False
 
     while not has_internet():
         time.sleep(3)
