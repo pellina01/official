@@ -9,15 +9,20 @@ import logging
 import traceback
 import os
 import datetime
-# import pika
+ADDR_SLAVE = 11
+TYPE_PH = 1
+TYPE_TB = 2
+PLACE_HOLDER = 0
+CLOUD_SERVER = "127.0.0.1" #localhost default
+LOCAL_HOST = "127.0.0.1" 
 
 
 def has_internet():
-    return os.system("sudo ping -c 1 " + raspi["mqtt_url"]) == 0
+    return os.system("sudo ping -c 1 " + CLOUD_SERVER) == 0
 
 
-def formatter(value, topic, connected):
-    if connected:
+def formatter(value, topic, is_connected):
+    if is_connected:
         print({"topic": topic, "status": "sending", "value": str(value)})
         return json.dumps({"status": "sending", "value": str(value)})
     else:
@@ -27,26 +32,19 @@ def formatter(value, topic, connected):
                            "time": str(datetime.datetime.now())})
 
 
-def sensor_serializer(rabbitmq_insert, mqtt_send, format, sensor_function, topic, *arg):
-    def get():
+def sensor_serializer(rabbitmq_insert, mqtt_send, format, sensor_function, topic, slave_addr, sensor_type):
+    def get_then_send():
         if has_internet():
-            mqtt_send(format(sensor_function(arg[0], arg[1]), topic, True))
+            mqtt_send(format(sensor_function(slave_addr, sensor_type), topic, True))
         else:
             rabbitmq_insert(
-                format(sensor_function(arg[0], arg[1]), topic, False))
-    return(get)
+                format(sensor_function(slave_addr, sensor_type), topic, False))
+    return(get_then_send)
 
 
 if __name__ == "__main__":
     time.sleep(20)
     is_printed = False
-    while not has_internet():
-        time.sleep(3)
-        if is_printed is False:
-            print("cant reach the cloud server. retrying.....")
-            is_printed = True
-
-    print("cloud server has been reached")
 
     with open('config.json', 'r') as file:
         data = json.loads(file.read())
@@ -55,20 +53,30 @@ if __name__ == "__main__":
     for key, value in data["raspi"].items():
         raspi.update({key: value})
 
+    CLOUD_SERVER = raspi["mqtt_url"]
+
+    while not has_internet():
+        time.sleep(3)
+        if is_printed is False:
+            print("cant reach the cloud server. retrying.....")
+            is_printed = True
+
+    print("cloud server has been reached")
+
     logging.basicConfig(filename=raspi["error_file"])
 
-    rabbit_mq = rabbitmq(raspi["mqtt_url"], "sensor_queue")
+    rabbit_mq = rabbitmq(LOCAL_HOST, "sensor_queue")
 
-    ph_mqtt = mqtt(raspi["ph_topic"], raspi["mqtt_url"])
-    tb_mqtt = mqtt(raspi["tb_topic"], raspi["mqtt_url"])
-    temp_mqtt = mqtt(raspi["temp_topic"], raspi["mqtt_url"])
+    ph_mqtt = mqtt(raspi["ph_topic"], CLOUD_SERVER)
+    tb_mqtt = mqtt(raspi["tb_topic"], CLOUD_SERVER)
+    temp_mqtt = mqtt(raspi["temp_topic"], CLOUD_SERVER)
 
     ph_send = sensor_serializer(
-        rabbit_mq.insert, ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], 11, 1)
+        rabbit_mq.insert, ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], ADDR_SLAVE, TYPE_PH)
     tb_send = sensor_serializer(
-        rabbit_mq.insert, tb_mqtt.send, formatter, read_arduino, raspi["tb_topic"], 11, 2)
+        rabbit_mq.insert, tb_mqtt.send, formatter, read_arduino, raspi["tb_topic"], ADDR_SLAVE, TYPE_TB)
     temp_send = sensor_serializer(
-        rabbit_mq.insert, temp_mqtt.send, formatter, read_value, raspi["temp_topic"], 0, 0)
+        rabbit_mq.insert, temp_mqtt.send, formatter, read_value, raspi["temp_topic"], PLACE_HOLDER, PLACE_HOLDER)
 
     while True:
         try:
@@ -79,19 +87,3 @@ if __name__ == "__main__":
         except Exception as e:
             logging.error(traceback.format_exc())
             time.sleep(5)
-    # # rabbitmq object
-    # connection = pika.BlockingConnection(
-    #     pika.ConnectionParameters(host=raspi["mqtt_url"]))
-    # channel = connection.channel()
-    # channel.queue_declare(queue='task_queue', durable=True)
-
-# rabbitmq client
-# def rabbit(json_msg):
-#     channel.basic_publish(
-#         exchange='',
-#         routing_key='task_queue',
-#         body=json_msg,
-#         properties=pika.BasicProperties(
-#             delivery_mode=2,  # make message persistent
-#         ))
-#     print(" [x] Sent to queue %s" % json_msg)
