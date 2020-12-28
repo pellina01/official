@@ -107,12 +107,9 @@ def read_do():
     if xin in temp:
         index = temp.index(xin)
         return d_o[index]
+    elif xin < d_o[0] or xin > d_o[46]:
+        return "None"
     else:
-        new = temp
-        new.append(xin)
-        new = sorted(new)
-        print(new)
-        new_x = sorted(new)
         max_index = temp.index(math.trunc(xin)) 
         min_index = max_index + 1
         yout = d_o[min_index] + ((xin - temp[min_index]) * (d_o[max_index] - d_o[min_index]) / (temp[max_index] - temp[min_index]))
