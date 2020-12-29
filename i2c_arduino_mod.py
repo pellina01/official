@@ -23,3 +23,8 @@ def read_arduino(slave_addr, sensor_type):
         return float(bytearray(response).decode("utf-8", "ignore"))
     except:
         print("failed to retrieve data from arduino...")
+
+
+if __name__ == "__main__":
+    print(read_arduino(11, 1))
+    print(read_arduino(11, 2))

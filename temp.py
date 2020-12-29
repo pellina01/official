@@ -7,3 +7,7 @@ def read_value(*args):
     temperature_in_celsius = sensor.get_temperature()
     del sensor
     return temperature_in_celsius
+
+
+if __name__ == "__main__":
+    print(read_value())
