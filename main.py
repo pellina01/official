@@ -106,6 +106,7 @@ if __name__ == "__main__":
             ph_send()
             tb_send()
             temp_send()
+            do_send()
             time.sleep(30)
         except Exception as e:
             logging.error(traceback.format_exc())
