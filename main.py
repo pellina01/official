@@ -11,7 +11,7 @@ import os
 import datetime
 from do import read_do
 
-time.sleep(20)
+time.sleep(5)
 
 with open('config.json', 'r') as file:
     data = json.loads(file.read())
@@ -25,7 +25,7 @@ ADDR_SLAVE = 11
 TYPE_PH = 1
 TYPE_TB = 2
 PLACE_HOLDER = 0
-LOCAL_HOST = "127.0.0.1" 
+LOCAL_HOST = "127.0.0.1"
 
 
 def has_internet():
@@ -62,6 +62,7 @@ def sensor_serializer(mqtt_send, format, sensor_function, topic, slave_addr, sen
         mqtt_send(format(sensor_function(slave_addr, sensor_type), topic, True))
     return(get_then_send)
 
+
 if __name__ == "__main__":
 
     is_printed = False
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     ph_mqtt = mqtt(raspi["ph_topic"], CLOUD_SERVER)
     tb_mqtt = mqtt(raspi["tb_topic"], CLOUD_SERVER)
     temp_mqtt = mqtt(raspi["temp_topic"], CLOUD_SERVER)
-    do_mqtt = mqtt("do", CLOUD_SERVER)
+    do_mqtt = mqtt(raspi["do_topic"], CLOUD_SERVER)
 
     # ph_send = sensor_serializer(
     #     rabbit_mq.insert, ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], ADDR_SLAVE, TYPE_PH)
@@ -90,16 +91,16 @@ if __name__ == "__main__":
     # temp_send = sensor_serializer(
     #     rabbit_mq.insert, temp_mqtt.send, formatter, read_value, raspi["temp_topic"], PLACE_HOLDER, PLACE_HOLDER)
     # do_send = sensor_serializer(
-    #     rabbit_mq.insert, do_mqtt.send, formatter, read_do, "do", PLACE_HOLDER, PLACE_HOLDER)
+    #     rabbit_mq.insert, do_mqtt.send, formatter, read_do, raspi["do_topic", PLACE_HOLDER, PLACE_HOLDER)
 
     ph_send = sensor_serializer(
-         ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], ADDR_SLAVE, TYPE_PH)
+        ph_mqtt.send, formatter, read_arduino, raspi["ph_topic"], ADDR_SLAVE, TYPE_PH)
     tb_send = sensor_serializer(
-         tb_mqtt.send, formatter, read_arduino, raspi["tb_topic"], ADDR_SLAVE, TYPE_TB)
+        tb_mqtt.send, formatter, read_arduino, raspi["tb_topic"], ADDR_SLAVE, TYPE_TB)
     temp_send = sensor_serializer(
-         temp_mqtt.send, formatter, read_value, raspi["temp_topic"], PLACE_HOLDER, PLACE_HOLDER)
+        temp_mqtt.send, formatter, read_value, raspi["temp_topic"], PLACE_HOLDER, PLACE_HOLDER)
     do_send = sensor_serializer(
-         do_mqtt.send, formatter, read_do, "do", PLACE_HOLDER, PLACE_HOLDER)
+        do_mqtt.send, formatter, read_do, raspi["do_topic", PLACE_HOLDER, PLACE_HOLDER)
 
     while True:
         try:
