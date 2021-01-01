@@ -1,5 +1,5 @@
 # edited for actual application
-from i2c_arduino_mod import read_arduino
+from i2c import read_arduino
 from mqtt import mqtt
 from rabbit import rabbitmq
 from wire1 import read_value
