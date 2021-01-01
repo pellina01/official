@@ -1,8 +1,8 @@
-from temp import read_value
+from wire1 import read_value
 import math
 
 
-def read_do():
+def read_do(*args):
     temp = [
         0,
         1,

@@ -2,7 +2,7 @@
 from i2c_arduino_mod import read_arduino
 from mqtt import mqtt
 from rabbit import rabbitmq
-from temp import read_value
+from wire1 import read_value
 import time
 import json
 import logging
