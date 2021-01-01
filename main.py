@@ -100,7 +100,7 @@ if __name__ == "__main__":
     temp_send = sensor_serializer(
         temp_mqtt.send, formatter, read_value, raspi["temp_topic"], PLACE_HOLDER, PLACE_HOLDER)
     do_send = sensor_serializer(
-        do_mqtt.send, formatter, read_do, raspi["do_topic", PLACE_HOLDER, PLACE_HOLDER)
+        do_mqtt.send, formatter, read_do, raspi["do_topic"], PLACE_HOLDER, PLACE_HOLDER)
 
     while True:
         try:
