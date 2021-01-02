@@ -108,7 +108,7 @@ def read_do(*args):
         xin = read_value()
     except:
         return "Error occured"
-    if xin < d_o[0] or xin > d_o[46]:
+    if xin < d_o[0] or xin > d_o[45]:
         return "Limit reached"
     elif xin in temp:
         index = temp.index(xin)
