@@ -1,4 +1,3 @@
-# edited for actual application
 from i2c import read_arduino
 from mqtt import mqtt
 from wire1 import read_value
@@ -9,17 +8,6 @@ import traceback
 import os
 import datetime
 from do import read_do
-
-with open('configv2.json', 'r') as file:
-    data = json.loads(file.read())
-
-raspi = {}
-for key, value in data["raspi"].items():
-    raspi.update({key: value})
-
-
-def has_internet():
-    return os.system("sudo ping -c 1 " + raspi["mqtt_url"]) == 0
 
 
 def formatter(value, topic):
@@ -33,11 +21,16 @@ def sensor_serializer(mqtt_send, format, sensor_function, topic, slave_addr, sen
     return(get_then_send)
 
 
-if __name__ == "__main__":
+def main():
+    with open('configv2.json', 'r') as file:
+        data = json.loads(file.read())
+
+    raspi = {}
+    for key, value in data["raspi"].items():
+        raspi.update({key: value})
 
     is_printed = False
-
-    while not has_internet():
+    while os.system("sudo ping -c 1 " + raspi["mqtt_url"]) != 0:
         time.sleep(3)
         if is_printed is False:
             print("cant reach the cloud server. retrying.....")
@@ -45,7 +38,7 @@ if __name__ == "__main__":
 
     print("cloud server has been reached")
 
-    logging.basicConfig(filename=raspi["error_file"])
+    logging.basicConfig(filename="error.log")
 
     switch = {
         "i2c": read_arduino,
@@ -67,3 +60,8 @@ if __name__ == "__main__":
         except Exception as e:
             logging.error(traceback.format_exc())
             time.sleep(5)
+        
+
+
+if __name__ == "__main__":
+    main()
