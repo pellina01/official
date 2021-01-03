@@ -22,7 +22,7 @@ def has_internet():
     return os.system("sudo ping -c 1 " + raspi["mqtt_url"]) == 0
 
 
-def formatter(value, topic, is_connected):
+def formatter(value, topic):
     print({"topic": topic, "status": "sending", "value": str(value)})
     return json.dumps({"status": "sending", "value": str(value)})
 
