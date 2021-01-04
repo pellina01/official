@@ -8,7 +8,7 @@ class serializer:
 
     def __formatter(self, value, topic):
         print({"topic": topic, "status": "sending", "value": str(value)})
-        return json.dumps({"status": "sending", "value": str(value)})
+        return self.json.dumps({"status": "sending", "value": str(value)})
 
     def __serialize(self, mqtt_send, sensor_function, topic, slave_addr, sensor_type):
         def get_then_send():
