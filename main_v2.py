@@ -1,8 +1,8 @@
 import json
 import logging
 import traceback
-from sensor_serializer import sensor as sens
-from check_internet import check
+from sensor_serializer import sensor as sensor_object
+from check_internet import check as internet_check
 from multiprocessing import Process
 from executor import executor
 
@@ -15,15 +15,17 @@ def main():
     for key, value in data["raspi"].items():
         raspi.update({key: value})
 
-    check(raspi["mqtt_url"])
+    internet_check(raspi["mqtt_url"])
 
     logging.basicConfig(filename="error.log")
 
     sensor_list = []
     for listed_sensor in raspi["sensors"]:
         sensor_list.append(
-            executor(sens(raspi["mqtt_url"],
-                          listed_sensor).process, raspi["frequency"])
+            executor(
+                sensor_object(raspi["mqtt_url"], listed_sensor).process,
+                raspi["frequency"]
+            )
         )
 
     processes = []
