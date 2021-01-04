@@ -42,5 +42,5 @@ class serializer:
         try:
             self.get_send()
         except Exception as e:
-            self.logging.error(traceback.format_exc())
+            self.logging.error(self.traceback.format_exc())
             print(e)
