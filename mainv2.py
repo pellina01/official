@@ -21,7 +21,7 @@ def main():
 
     sensor_list = []
     for sensor in raspi["sensors"]:
-        sensor_list.append(serializer(raspi["mqtt_url"].send, sensor))
+        sensor_list.append(serializer(raspi["mqtt_url"], sensor))
 
     processes = []
     while True:
