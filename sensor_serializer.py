@@ -1,4 +1,4 @@
-class serializer:
+class sensor:
     from i2c import read_arduino
     from wire1 import read_value
     from do import read_do

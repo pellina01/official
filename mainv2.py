@@ -1,10 +1,10 @@
-import time
 import json
 import logging
 import traceback
-from sensor_serializer import serializer
+from sensor_serializer import sensor as sens
 from check_internet import check
 from multiprocessing import Process
+from executor import executor
 
 
 def main():
@@ -20,23 +20,23 @@ def main():
     logging.basicConfig(filename="error.log")
 
     sensor_list = []
-    for sensor in raspi["sensors"]:
-        sensor_list.append(serializer(raspi["mqtt_url"], sensor))
+    for listed_sensor in raspi["sensors"]:
+        sensor_list.append(
+            executor(sens(raspi["mqtt_url"],
+                          listed_sensor).process, raspi["frequency"])
+        )
 
     processes = []
-    while True:
-        try:
-            for sensor in sensor_list:
-                process = Process(target=sensor.process)
-                process.start()
-                processes.append(process)
-            for process in processes:
-                process.join()
-                processes.remove(process)
-            time.sleep(30)
-        except Exception as e:
-            logging.error(traceback.format_exc())
-            time.sleep(5)
+    try:
+        for sensor in sensor_list:
+            process = Process(target=sensor.execute)
+            process.start()
+            processes.append(process)
+        for process in processes:
+            process.join()
+            processes.remove(process)
+    except Exception as e:
+        logging.error(traceback.format_exc())
 
 
 if __name__ == "__main__":

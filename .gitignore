@@ -2,6 +2,7 @@ config.ini
 __pycache__
 error.log
 sample.py
+sample2.py
 sample2.ini
 sample.json
 config.json
