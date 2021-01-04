@@ -16,15 +16,15 @@ class serializer:
                 sensor_function(slave_addr, sensor_type), topic))
         return(get_then_send)
 
-    def __init__(self, url, sensor):
+    def __init__(self, url, sensor_parameters):
         from mqtt import mqtt
 
         self.logging.basicConfig(filename="error.log")
 
-        sensor_type = sensor[3]
-        slave_addr = sensor[2]
-        sensor_function = sensor[1]
-        topic = sensor[0]
+        sensor_type = sensor_parameters[3]
+        slave_addr = sensor_parameters[2]
+        sensor_function = sensor_parameters[1]
+        topic = sensor_parameters[0]
         switch = {
             "read_arduino": read_arduino,
             "read_value": read_value,
